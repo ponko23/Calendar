@@ -24,47 +24,41 @@ $ ->
     detail: String
 
   displayRange =
-    today: new Date() # 基準日
-    start: {} # calendarに描画する週・月の開始日(日曜日）
-    end: {} # calendarに描画する週・月の最終日(土曜日)
+    today: new ponDate() # 基準日
+    start: new ponDate() # calendarに描画する週・月の開始日(日曜日）
+    end: new ponDate() # calendarに描画する週・月の最終日(土曜日)
     days: Number
-    mode: 'month'
-    # weekだと7日 monthだと6行42日
-
-    copyDate: (day)->
-      return new Date(day.getFullYear(), day.getMonth(), day.getDate())
+    mode: 'month' # weekだと7日 monthだと6行42日
 
     # todayを含むRangeｈへの移動
     moveToday: ->
-      @today = new Date()
+      @today = new ponDate()
       @moveRange 0
 
     # modeに応じてfirstdayとstartdayを変更し、calendarを再描画する
-    moveRange: (vol)->
-      @start = @copyDate @today
+    moveRange: (val)->
+      @start.copy @today
       switch @mode
         when 'day'
-          @start.setDate(@start.getDate() + vol)
-          @today.setDate(@today.getDate() + vol)
-          $('#calendar').text @start.toLocaleDateString()
+          @today.addDay(val)
+          @start.addDay(val)
+          $('#calendar').text @start.getDate() + @start.getWeekString()
         when 'week'
-          @start.setDate(@start.getDate() + vol * 7)
-          @start.setDate(@start.getDate() - @start.getDay())
-          @end = @copyDate @start
-          @end.setDate(@end.getDate() + 6)
-          @today.setDate(@today.getDate() + vol * 7)
-          $('#calendar').text @start.toLocaleDateString() + ' - ' + @end.toLocaleDateString()
+          @today.addWeek(val)
+          @start.addWeek(val)
+          @start.addDay(-@start.getWeekDay())
+          @end.copy(@start)
+          @end.addDay(6)
+          $('#calendar').text @start.getDate() + ' - ' + @end.getDate()
         when 'month'
-          @start.setMonth(@start.getMonth() + vol)
-          @start.setDate(1)
-          @start.setDate(1 - @start.getDay())
-          @today.setMonth(@today.getMonth() + vol)
-          @end = @copyDate @start
-          @end.setDate(@end.getDate() + 41)
-          $('#calendar').text @start.toLocaleDateString() + ' - ' + @end.toLocaleDateString()
+          @today.addMonth(val)
+          @start.addMonth(val)
+          @start.setDay(1)
+          @start.addDay(if @start.getWeekDay() is 0 then -7 else -@start.getWeekDay())
+          @end.copy(@start)
+          @end.addDay(41)
         else
-      $('#thisRange').text @today.toLocaleDateString()
-
+      drowCalendar()
     changeMode: (mode)->
       @mode = mode
       @moveRange 0
@@ -72,3 +66,33 @@ $ ->
   ###
     View
   ###
+  drowCalendar = ->
+    $('#calendar').empty()
+    tableTxt = []
+    dispDate = new ponDate()
+    dispDate.copy(displayRange.start)
+    switch displayRange.mode
+      when 'month'
+        tableTxt.push '<table class="month"><tbody><tr><th>日</th><th>月</th><th>火</th><th>水</th><th>木</th><th>金</th><th>土</th></tr>'
+        for [1..6]
+          tableTxt.push '<tr>'
+          for [1..7]
+            tableTxt.push '<td>', dispDate.getDay(), '</td>'
+            dispDate.addDay(1)
+          tableTxt.push '</tr>'
+        tableTxt.push '</tbody></table>'
+        $('#thisRange').text [displayRange.today.getYear(), displayRange.today.getMonth()].join '/'
+      when 'week'
+        tableTxt.push '<table class="week"><tbody><tr><th>日</th><th>月</th><th>火</th><th>水</th><th>木</th><th>金</th><th>土</th></tr>'
+        for [1..7]
+          tableTxt.push '<td>', dispDate.getDay(), '</td>'
+          dispDate.addDay(1)
+        tableTxt.push '</tr>'
+        tableTxt.push '</tbody></table>'
+        $('#thisRange').text displayRange.today.getDate()
+      when 'day'
+        tableTxt.push '<table class="day"><tbody><tr><th>', dispDate.getDay(), dispDate.getWeekString(), '</th></tr><tr><td></td></tr></tbody></table>'
+        $('#thisRange').text displayRange.today.getDate()
+      else
+    $('#calendar').append tableTxt.join ''
+  displayRange.moveToday()

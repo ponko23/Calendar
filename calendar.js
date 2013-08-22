@@ -4,7 +4,7 @@ $(function() {
     EventHandler
   */
 
-  var displayRange, schedule;
+  var displayRange, drowCalendar, schedule;
   $('#today').on('click', function() {
     return displayRange.moveToday();
   });
@@ -32,46 +32,42 @@ $(function() {
     subject: String,
     detail: String
   };
-  return displayRange = {
-    today: new Date(),
-    start: {},
-    end: {},
+  displayRange = {
+    today: new ponDate(),
+    start: new ponDate(),
+    end: new ponDate(),
     days: Number,
     mode: 'month',
-    copyDate: function(day) {
-      return new Date(day.getFullYear(), day.getMonth(), day.getDate());
-    },
     moveToday: function() {
-      this.today = new Date();
+      this.today = new ponDate();
       return this.moveRange(0);
     },
-    moveRange: function(vol) {
-      this.start = this.copyDate(this.today);
+    moveRange: function(val) {
+      this.start.copy(this.today);
       switch (this.mode) {
         case 'day':
-          this.start.setDate(this.start.getDate() + vol);
-          this.today.setDate(this.today.getDate() + vol);
-          $('#calendar').text(this.start.toLocaleDateString());
+          this.today.addDay(val);
+          this.start.addDay(val);
+          $('#calendar').text(this.start.getDate() + this.start.getWeekString());
           break;
         case 'week':
-          this.start.setDate(this.start.getDate() + vol * 7);
-          this.start.setDate(this.start.getDate() - this.start.getDay());
-          this.end = this.copyDate(this.start);
-          this.end.setDate(this.end.getDate() + 6);
-          this.today.setDate(this.today.getDate() + vol * 7);
-          $('#calendar').text(this.start.toLocaleDateString() + ' - ' + this.end.toLocaleDateString());
+          this.today.addWeek(val);
+          this.start.addWeek(val);
+          this.start.addDay(-this.start.getWeekDay());
+          this.end.copy(this.start);
+          this.end.addDay(6);
+          $('#calendar').text(this.start.getDate() + ' - ' + this.end.getDate());
           break;
         case 'month':
-          this.start.setMonth(this.start.getMonth() + vol);
-          this.start.setDate(1);
-          this.start.setDate(1 - this.start.getDay());
-          this.today.setMonth(this.today.getMonth() + vol);
-          this.end = this.copyDate(this.start);
-          this.end.setDate(this.end.getDate() + 41);
-          $('#calendar').text(this.start.toLocaleDateString() + ' - ' + this.end.toLocaleDateString());
+          this.today.addMonth(val);
+          this.start.addMonth(val);
+          this.start.setDay(1);
+          this.start.addDay(this.start.getWeekDay() === 0 ? -7 : -this.start.getWeekDay());
+          this.end.copy(this.start);
+          this.end.addDay(41);
           break;
       }
-      return $('#thisRange').text(this.today.toLocaleDateString());
+      return drowCalendar();
     },
     changeMode: function(mode) {
       this.mode = mode;
@@ -82,4 +78,42 @@ $(function() {
     View
   */
 
+  drowCalendar = function() {
+    var dispDate, tableTxt, _i, _j, _k;
+    $('#calendar').empty();
+    tableTxt = [];
+    dispDate = new ponDate();
+    dispDate.copy(displayRange.start);
+    switch (displayRange.mode) {
+      case 'month':
+        tableTxt.push('<table class="month"><tbody><tr><th>日</th><th>月</th><th>火</th><th>水</th><th>木</th><th>金</th><th>土</th></tr>');
+        for (_i = 1; _i <= 6; _i++) {
+          tableTxt.push('<tr>');
+          for (_j = 1; _j <= 7; _j++) {
+            tableTxt.push('<td>', dispDate.getDay(), '</td>');
+            dispDate.addDay(1);
+          }
+          tableTxt.push('</tr>');
+        }
+        tableTxt.push('</tbody></table>');
+        $('#thisRange').text([displayRange.today.getYear(), displayRange.today.getMonth()].join('/'));
+        break;
+      case 'week':
+        tableTxt.push('<table class="week"><tbody><tr><th>日</th><th>月</th><th>火</th><th>水</th><th>木</th><th>金</th><th>土</th></tr>');
+        for (_k = 1; _k <= 7; _k++) {
+          tableTxt.push('<td>', dispDate.getDay(), '</td>');
+          dispDate.addDay(1);
+        }
+        tableTxt.push('</tr>');
+        tableTxt.push('</tbody></table>');
+        $('#thisRange').text(displayRange.today.getDate());
+        break;
+      case 'day':
+        tableTxt.push('<table class="day"><tbody><tr><th>', dispDate.getDay(), dispDate.getWeekString(), '</th></tr><tr><td></td></tr></tbody></table>');
+        $('#thisRange').text(displayRange.today.getDate());
+        break;
+    }
+    return $('#calendar').append(tableTxt.join(''));
+  };
+  return displayRange.moveToday();
 });
