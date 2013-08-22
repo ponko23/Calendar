@@ -104,7 +104,11 @@ ponDate = ->
 
   # 日付を文字列で返す("年/月/日")
   getDate: ->
-    [@ponDate.getFullYear(), @ponDate.getMonth() + 1, @ponDate.getDate()].join '/'
+    [
+      @ponDate.getFullYear()
+      @ponDate.getMonth() + 1
+      @ponDate.getDate()
+    ].join '/'
 
   # 日付を設定する
   # 引数(val1:年, val2:月,val3:日)
@@ -116,7 +120,11 @@ ponDate = ->
 
   # 時間を文字列で返す("時:分:秒:ミリ秒")
   getTime: ->
-    [@ponDate.getHours(), @ponDate.getMinutes(), @ponDate.getSeconds()].join ':'
+    [
+      @ponDate.getHours()
+      @ponDate.getMinutes()
+      @ponDate.getSeconds()
+    ].join ':'
 
   # 時間を設定する
   # 引数(val1:時, val2:分, val3:秒, val4:ミリ秒)
@@ -130,5 +138,13 @@ ponDate = ->
   # ponDateオブジェクトをコピーする
   # 引数(source:コピー元ponDateオブジェクト
   copy: (source)->
-    @ponDate = new Date(source.ponDate.getFullYear(),source.ponDate.getMonth(), source.ponDate.getDate(), source.ponDate.getHours(), source.ponDate.getMinutes(), source.ponDate.getSeconds(), source.ponDate.getMilliseconds())
+    @ponDate = new Date(
+      source.ponDate.getFullYear()
+      source.ponDate.getMonth()
+      source.ponDate.getDate()
+      source.ponDate.getHours()
+      source.ponDate.getMinutes()
+      source.ponDate.getSeconds()
+      source.ponDate.getMilliseconds()
+    )
     return
