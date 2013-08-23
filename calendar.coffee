@@ -26,16 +26,14 @@ $ ->
   displayRange =
     today: new ponDate() # 基準日
     start: new ponDate() # calendarに描画する週・月の開始日(日曜日）
-    end: new ponDate() # calendarに描画する週・月の最終日(土曜日)
-    days: Number
-    mode: 'month' # weekだと7日 monthだと6行42日
+    mode: 'month' # month、week、dayがある 初期値month
 
-    # todayを含むRangeｈへの移動
+    # todayを含むRangeへの移動
     moveToday: ->
       @today = new ponDate()
       @moveRange 0
 
-    # modeに応じてfirstdayとstartdayを変更し、calendarを再描画する
+    # modeに応じてstartを変更し、calendarを再描画する
     moveRange: (val)->
       @start.copy @today
       switch @mode
@@ -77,7 +75,7 @@ $ ->
         for [1..6]
           tableTxt.push '<tr>'
           for [1..7]
-            tableTxt.push '<td>', dispDate.getDay(), '</td>'
+            tableTxt.push '<td id="', dispDate.getDate(), '"><p>', dispDate.getDay(), '</p></td>'
             dispDate.addDay(1)
           tableTxt.push '</tr>'
         tableTxt.push '</tbody></table>'
@@ -85,7 +83,7 @@ $ ->
       when 'week'
         tableTxt.push '<table class="week"><tbody><tr><th>日</th><th>月</th><th>火</th><th>水</th><th>木</th><th>金</th><th>土</th></tr>'
         for [1..7]
-          tableTxt.push '<td>', dispDate.getDay(), '</td>'
+          tableTxt.push '<td id="', dispDate.getDate(), '"><p>', dispDate.getDay(), '</p></td>'
           dispDate.addDay(1)
         tableTxt.push '</tr>'
         tableTxt.push '</tbody></table>'
@@ -95,4 +93,6 @@ $ ->
         $('#thisRange').text displayRange.today.getDate()
       else
     $('#calendar').append tableTxt.join ''
+    $('tr').children('td[id^="' +displayRange.today.getYear() + '/' + displayRange.today.getMonth() + '"]').children('p').css('color','#000')
+
   displayRange.moveToday()

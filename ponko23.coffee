@@ -1,7 +1,8 @@
 ###
   カスタムDateオブジェクト
+
 ###
-ponDate = ->
+ponDate = ()->
   ponDate: new Date()
 
   # 西暦表記の年数を返す
@@ -66,6 +67,14 @@ ponDate = ->
     @ponDate.setDate(@ponDate.getDate() + val * 7)
     return
 
+  # 月末日を返す
+  getLastDay: ->
+    tmpDate = new Date(
+      @ponDate.getFullYear()
+      @ponDate.getMonth() + 1
+      0
+    ).getDate()
+
   # 時を返す(0~23)
   getHours: ->
     @ponDate.getHours()
@@ -103,12 +112,23 @@ ponDate = ->
     return
 
   # 日付を文字列で返す("年/月/日")
-  getDate: ->
-    [
-      @ponDate.getFullYear()
-      @ponDate.getMonth() + 1
-      @ponDate.getDate()
-    ].join '/'
+  # 引数(double:null以外なら月日を2桁表示に固定する)
+  getDate: (double)->
+    if double
+      month = ("00" + (@ponDate.getMonth() + 1))
+      day = ("00" + @ponDate.getDate())
+      [
+        @ponDate.getFullYear()
+        month.substr(month.length-2)
+        day.substr(day.length-2)
+      ].join '/'
+    else
+      [
+        @ponDate.getFullYear()
+        @ponDate.getMonth() + 1
+        @ponDate.getDate()
+      ].join '/'
+
 
   # 日付を設定する
   # 引数(val1:年, val2:月,val3:日)
@@ -138,13 +158,5 @@ ponDate = ->
   # ponDateオブジェクトをコピーする
   # 引数(source:コピー元ponDateオブジェクト
   copy: (source)->
-    @ponDate = new Date(
-      source.ponDate.getFullYear()
-      source.ponDate.getMonth()
-      source.ponDate.getDate()
-      source.ponDate.getHours()
-      source.ponDate.getMinutes()
-      source.ponDate.getSeconds()
-      source.ponDate.getMilliseconds()
-    )
+    @ponDate = new Date(source.ponDate)
     return

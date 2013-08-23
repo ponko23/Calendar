@@ -35,8 +35,6 @@ $(function() {
   displayRange = {
     today: new ponDate(),
     start: new ponDate(),
-    end: new ponDate(),
-    days: Number,
     mode: 'month',
     moveToday: function() {
       this.today = new ponDate();
@@ -90,7 +88,7 @@ $(function() {
         for (_i = 1; _i <= 6; _i++) {
           tableTxt.push('<tr>');
           for (_j = 1; _j <= 7; _j++) {
-            tableTxt.push('<td>', dispDate.getDay(), '</td>');
+            tableTxt.push('<td id="', dispDate.getDate(), '"><p>', dispDate.getDay(), '</p></td>');
             dispDate.addDay(1);
           }
           tableTxt.push('</tr>');
@@ -101,7 +99,7 @@ $(function() {
       case 'week':
         tableTxt.push('<table class="week"><tbody><tr><th>日</th><th>月</th><th>火</th><th>水</th><th>木</th><th>金</th><th>土</th></tr>');
         for (_k = 1; _k <= 7; _k++) {
-          tableTxt.push('<td>', dispDate.getDay(), '</td>');
+          tableTxt.push('<td id="', dispDate.getDate(), '"><p>', dispDate.getDay(), '</p></td>');
           dispDate.addDay(1);
         }
         tableTxt.push('</tr>');
@@ -113,7 +111,8 @@ $(function() {
         $('#thisRange').text(displayRange.today.getDate());
         break;
     }
-    return $('#calendar').append(tableTxt.join(''));
+    $('#calendar').append(tableTxt.join(''));
+    return $('tr').children('td[id^="' + displayRange.today.getYear() + '/' + displayRange.today.getMonth() + '"]').children('p').css('color', '#000');
   };
   return displayRange.moveToday();
 });

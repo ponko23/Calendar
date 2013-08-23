@@ -50,3 +50,7 @@ th:last-child,
 td:last-child {
   background-color: #aaaaff;
 }
+.month td p,
+.week td p {
+  color: #999;
+}

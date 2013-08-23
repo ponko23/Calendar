@@ -44,6 +44,10 @@ ponDate = function() {
     addWeek: function(val) {
       this.ponDate.setDate(this.ponDate.getDate() + val * 7);
     },
+    getLastDay: function() {
+      var tmpDate;
+      return tmpDate = new Date(this.ponDate.getFullYear(), this.ponDate.getMonth() + 1, 0).getDate();
+    },
     getHours: function() {
       return this.ponDate.getHours();
     },
@@ -68,8 +72,15 @@ ponDate = function() {
     setMilliseconds: function(val) {
       this.ponDate.setMilliseconds(val);
     },
-    getDate: function() {
-      return [this.ponDate.getFullYear(), this.ponDate.getMonth() + 1, this.ponDate.getDate()].join('/');
+    getDate: function(double) {
+      var day, month;
+      if (double) {
+        month = "00" + (this.ponDate.getMonth() + 1);
+        day = "00" + this.ponDate.getDate();
+        return [this.ponDate.getFullYear(), month.substr(month.length - 2), day.substr(day.length - 2)].join('/');
+      } else {
+        return [this.ponDate.getFullYear(), this.ponDate.getMonth() + 1, this.ponDate.getDate()].join('/');
+      }
     },
     setDate: function(val1, val2, val3) {
       this.ponDate.setFullYear(val1);
@@ -89,7 +100,7 @@ ponDate = function() {
       this.ponDate.setMilliseconds(val4);
     },
     copy: function(source) {
-      this.ponDate = new Date(source.ponDate.getFullYear(), source.ponDate.getMonth(), source.ponDate.getDate(), source.ponDate.getHours(), source.ponDate.getMinutes(), source.ponDate.getSeconds(), source.ponDate.getMilliseconds());
+      this.ponDate = new Date(source.ponDate);
     }
   };
 };
