@@ -45,8 +45,7 @@ ponDate = function() {
       this.ponDate.setDate(this.ponDate.getDate() + val * 7);
     },
     getLastDay: function() {
-      var tmpDate;
-      return tmpDate = new Date(this.ponDate.getFullYear(), this.ponDate.getMonth() + 1, 0).getDate();
+      return new Date(this.ponDate.getFullYear(), this.ponDate.getMonth() + 1, 0).getDate();
     },
     getHours: function() {
       return this.ponDate.getHours();

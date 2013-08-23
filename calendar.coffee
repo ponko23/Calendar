@@ -3,17 +3,20 @@ $ ->
     EventHandler
   ###
   $('#today').on 'click', ->
-    displayRange.moveToday()
+    moveToday()
   $('#before').on 'click', ->
-    displayRange.moveRange -1
+    beforeRange()
   $('#next').on 'click', ->
-    displayRange.moveRange 1
+    nextRange()
   $('#monthMode').on 'click', ->
-    displayRange.changeMode 'month'
+    changeMonthMode()
   $('#weekMode').on 'click', ->
-    displayRange.changeMode 'week'
+    changeWeekMode()
   $('#dayMode').on 'click', ->
-    displayRange.changeMode 'day'
+    changeDayMode()
+
+  $('#calendar').on 'click', 'td', (event) ->
+    cellSelect(event)
 
   ###
     Model
@@ -27,72 +30,113 @@ $ ->
     today: new ponDate() # 基準日
     start: new ponDate() # calendarに描画する週・月の開始日(日曜日）
     mode: 'month' # month、week、dayがある 初期値month
+    range: 6 # 表示する週の数 月と週の時のみ使用する
 
-    # todayを含むRangeへの移動
-    moveToday: ->
-      @today = new ponDate()
-      @moveRange 0
-
-    # modeに応じてstartを変更し、calendarを再描画する
-    moveRange: (val)->
-      @start.copy @today
+    # 引数と月週日モードに応じてtodayを移動し、todayからstart、endを求める
+    # 引数(val:-1、null、1 )
+    moveRange: (val = null)->
       switch @mode
         when 'day'
-          @today.addDay(val)
-          @start.addDay(val)
-          $('#calendar').text @start.getDate() + @start.getWeekString()
+          @today.addDay(val) if val
+          @start.copy(@today)
         when 'week'
-          @today.addWeek(val)
-          @start.addWeek(val)
+          @today.addWeek(val) if val
+          @start.copy(@today)
           @start.addDay(-@start.getWeekDay())
-          @end.copy(@start)
-          @end.addDay(6)
-          $('#calendar').text @start.getDate() + ' - ' + @end.getDate()
+          @range = 1
         when 'month'
-          @today.addMonth(val)
-          @start.addMonth(val)
+          @today.addMonth(val) if val
+          @start.copy(@today)
           @start.setDay(1)
           @start.addDay(if @start.getWeekDay() is 0 then -7 else -@start.getWeekDay())
-          @end.copy(@start)
-          @end.addDay(41)
+          @range = 6
         else
-      drowCalendar()
+
+    # 月週日表示モードの切り替え
+    # 引数(mode:'month'、'week'、'day')
     changeMode: (mode)->
       @mode = mode
-      @moveRange 0
+      @moveRange()
+
+    # todayを現在日に移動
+    moveToday: ->
+      @today = new ponDate()
+      @moveRange()
+
+  ###
+    Controller
+  ###
+  moveToday = ->
+    displayRange.moveToday()
+    drowCalendar()
+
+  beforeRange = ->
+    displayRange.moveRange(-1)
+    drowCalendar()
+
+  nextRange = ->
+    displayRange.moveRange(1)
+    drowCalendar()
+
+  changeMonthMode = ->
+    displayRange.changeMode('month')
+    displayRange.moveRange()
+    drowCalendar()
+
+  changeWeekMode = ->
+    displayRange.changeMode('week')
+    displayRange.moveRange()
+    drowCalendar()
+
+  changeDayMode = ->
+    displayRange.changeMode('day')
+    drowCalendar()
+
+  cellSelect = (event) ->
+    $('.selectday').removeClass('selectday')
+    $(event.currentTarget).addClass('selectday')
+    tmpArray = $(event.currentTarget).attr('id').split('-')
+    tmpArray[0] = Number(tmpArray[0])
+    tmpArray[1] = Number(tmpArray[1])
+    tmpArray[2] = Number(tmpArray[2])
+    displayRange.today.setDate(tmpArray[0], tmpArray[1], tmpArray[2])
+    displayRange.moveRange()
 
   ###
     View
   ###
+  # カレンダー描画
   drowCalendar = ->
     $('#calendar').empty()
     tableTxt = []
     dispDate = new ponDate()
     dispDate.copy(displayRange.start)
-    switch displayRange.mode
-      when 'month'
-        tableTxt.push '<table class="month"><tbody><tr><th>日</th><th>月</th><th>火</th><th>水</th><th>木</th><th>金</th><th>土</th></tr>'
-        for [1..6]
-          tableTxt.push '<tr>'
-          for [1..7]
-            tableTxt.push '<td id="', dispDate.getDate(), '"><p>', dispDate.getDay(), '</p></td>'
-            dispDate.addDay(1)
-          tableTxt.push '</tr>'
-        tableTxt.push '</tbody></table>'
-        $('#thisRange').text [displayRange.today.getYear(), displayRange.today.getMonth()].join '/'
-      when 'week'
-        tableTxt.push '<table class="week"><tbody><tr><th>日</th><th>月</th><th>火</th><th>水</th><th>木</th><th>金</th><th>土</th></tr>'
+    if displayRange.mode is 'day'
+      tableTxt.push(
+        '<table class="day"><tbody><tr><th>'
+        dispDate.getWeekString()
+        '</th></tr><tr><td id="'
+        displayRange.today.getDate().replace(/\//g, '-')
+        '"><p>'
+        dispDate.getDay()
+        '</p></td></tr></tbody></table>'
+      )
+      $('#thisRange').text displayRange.today.getDate()
+    else
+      tableTxt.push '<table class="', displayRange.mode, '"><tbody><tr><th>日</th><th>月</th><th>火</th><th>水</th><th>木</th><th>金</th><th>土</th></tr>'
+      weeks = displayRange.range
+      for [1..weeks]
+        tableTxt.push '<tr>'
         for [1..7]
-          tableTxt.push '<td id="', dispDate.getDate(), '"><p>', dispDate.getDay(), '</p></td>'
+          tableTxt.push '<td id="', dispDate.getDate().replace(/\//g, '-'), '"><p>', dispDate.getDay(), '</p></td>'
           dispDate.addDay(1)
         tableTxt.push '</tr>'
-        tableTxt.push '</tbody></table>'
-        $('#thisRange').text displayRange.today.getDate()
-      when 'day'
-        tableTxt.push '<table class="day"><tbody><tr><th>', dispDate.getDay(), dispDate.getWeekString(), '</th></tr><tr><td></td></tr></tbody></table>'
-        $('#thisRange').text displayRange.today.getDate()
-      else
+      tableTxt.push '</tbody></table>'
+      $('#thisRange').text displayRange.today.getDate()
     $('#calendar').append tableTxt.join ''
-    $('tr').children('td[id^="' +displayRange.today.getYear() + '/' + displayRange.today.getMonth() + '"]').children('p').css('color','#000')
+    # todayが含まれる月の日付のみ黒くする
+    $('tr').children('td[id^="' +displayRange.today.getYear() + '-' + displayRange.today.getMonth() + '"]').children('p').css('color','#000')
+    $('#' + dispDate.getDate().replace(/\//g, '-')).addClass('selectday')
 
   displayRange.moveToday()
+  drowCalendar()

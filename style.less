@@ -1,15 +1,17 @@
 #toolbar {
   background-color: #2453e1;
   height: 1.5em;
-  a {
+  li {
     color: #e4e5e8;
     display: block;
     float: left;
     text-decoration: none;
     text-align: center;
     width: 6em;
+    cursor: pointer;
+    -webkit-user-select: none;
   }
-  a:hover {
+  li:hover {
     background-color: #848da5;
   }
 }
@@ -36,6 +38,7 @@ tr {
 th, td {
   border-right: 1px solid #000;
   width: 3em;
+  -webkit-user-select: none;
 }
 th {
   background-color: #ccc;
@@ -44,13 +47,26 @@ th {
 td {
   height: 3em;
 }
-th:first-child, td:first-child{
+.selectday {
+  background-color: #aaffaa;
+}
+td:first-child{
   background-color: #ffaaaa;
 }
-th:last-child, td:last-child{
+td:last-child{
   background-color: #aaaaff;
 }
 .month td p, .week td p{
   color: #999;
 }
+
+.day {
+  th {
+    background-color: #ccc;
+  }
+  td {
+    background-color: #fff;
+  }
+}
+
 

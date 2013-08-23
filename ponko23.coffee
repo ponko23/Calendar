@@ -2,7 +2,7 @@
   カスタムDateオブジェクト
 
 ###
-ponDate = ()->
+ponDate = ->
   ponDate: new Date()
 
   # 西暦表記の年数を返す
@@ -67,9 +67,9 @@ ponDate = ()->
     @ponDate.setDate(@ponDate.getDate() + val * 7)
     return
 
-  # 月末日を返す
+  # 月末日を返す(28~31)
   getLastDay: ->
-    tmpDate = new Date(
+    new Date(
       @ponDate.getFullYear()
       @ponDate.getMonth() + 1
       0

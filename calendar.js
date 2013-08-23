@@ -4,24 +4,27 @@ $(function() {
     EventHandler
   */
 
-  var displayRange, drowCalendar, schedule;
+  var beforeRange, cellSelect, changeDayMode, changeMonthMode, changeWeekMode, displayRange, drowCalendar, moveToday, nextRange, schedule;
   $('#today').on('click', function() {
-    return displayRange.moveToday();
+    return moveToday();
   });
   $('#before').on('click', function() {
-    return displayRange.moveRange(-1);
+    return beforeRange();
   });
   $('#next').on('click', function() {
-    return displayRange.moveRange(1);
+    return nextRange();
   });
   $('#monthMode').on('click', function() {
-    return displayRange.changeMode('month');
+    return changeMonthMode();
   });
   $('#weekMode').on('click', function() {
-    return displayRange.changeMode('week');
+    return changeWeekMode();
   });
   $('#dayMode').on('click', function() {
-    return displayRange.changeMode('day');
+    return changeDayMode();
+  });
+  $('#calendar').on('click', 'td', function(event) {
+    return cellSelect(event);
   });
   /*
     Model
@@ -36,83 +39,115 @@ $(function() {
     today: new ponDate(),
     start: new ponDate(),
     mode: 'month',
-    moveToday: function() {
-      this.today = new ponDate();
-      return this.moveRange(0);
-    },
+    range: 6,
     moveRange: function(val) {
-      this.start.copy(this.today);
+      if (val == null) {
+        val = null;
+      }
       switch (this.mode) {
         case 'day':
-          this.today.addDay(val);
-          this.start.addDay(val);
-          $('#calendar').text(this.start.getDate() + this.start.getWeekString());
-          break;
+          if (val) {
+            this.today.addDay(val);
+          }
+          return this.start.copy(this.today);
         case 'week':
-          this.today.addWeek(val);
-          this.start.addWeek(val);
+          if (val) {
+            this.today.addWeek(val);
+          }
+          this.start.copy(this.today);
           this.start.addDay(-this.start.getWeekDay());
-          this.end.copy(this.start);
-          this.end.addDay(6);
-          $('#calendar').text(this.start.getDate() + ' - ' + this.end.getDate());
-          break;
+          return this.range = 1;
         case 'month':
-          this.today.addMonth(val);
-          this.start.addMonth(val);
+          if (val) {
+            this.today.addMonth(val);
+          }
+          this.start.copy(this.today);
           this.start.setDay(1);
           this.start.addDay(this.start.getWeekDay() === 0 ? -7 : -this.start.getWeekDay());
-          this.end.copy(this.start);
-          this.end.addDay(41);
-          break;
+          return this.range = 6;
       }
-      return drowCalendar();
     },
     changeMode: function(mode) {
       this.mode = mode;
-      return this.moveRange(0);
+      return this.moveRange();
+    },
+    moveToday: function() {
+      this.today = new ponDate();
+      return this.moveRange();
     }
+  };
+  /*
+    Controller
+  */
+
+  moveToday = function() {
+    displayRange.moveToday();
+    return drowCalendar();
+  };
+  beforeRange = function() {
+    displayRange.moveRange(-1);
+    return drowCalendar();
+  };
+  nextRange = function() {
+    displayRange.moveRange(1);
+    return drowCalendar();
+  };
+  changeMonthMode = function() {
+    displayRange.changeMode('month');
+    displayRange.moveRange();
+    return drowCalendar();
+  };
+  changeWeekMode = function() {
+    displayRange.changeMode('week');
+    displayRange.moveRange();
+    return drowCalendar();
+  };
+  changeDayMode = function() {
+    displayRange.changeMode('day');
+    return drowCalendar();
+  };
+  cellSelect = function(event) {
+    var tmpArray;
+    $('.selectday').removeClass('selectday');
+    $(event.currentTarget).addClass('selectday');
+    tmpArray = $(event.currentTarget).attr('id').split('-');
+    tmpArray[0] = Number(tmpArray[0]);
+    tmpArray[1] = Number(tmpArray[1]);
+    tmpArray[2] = Number(tmpArray[2]);
+    displayRange.today.setDate(tmpArray[0], tmpArray[1], tmpArray[2]);
+    return displayRange.moveRange();
   };
   /*
     View
   */
 
   drowCalendar = function() {
-    var dispDate, tableTxt, _i, _j, _k;
+    var dispDate, tableTxt, weeks, _i, _j;
     $('#calendar').empty();
     tableTxt = [];
     dispDate = new ponDate();
     dispDate.copy(displayRange.start);
-    switch (displayRange.mode) {
-      case 'month':
-        tableTxt.push('<table class="month"><tbody><tr><th>日</th><th>月</th><th>火</th><th>水</th><th>木</th><th>金</th><th>土</th></tr>');
-        for (_i = 1; _i <= 6; _i++) {
-          tableTxt.push('<tr>');
-          for (_j = 1; _j <= 7; _j++) {
-            tableTxt.push('<td id="', dispDate.getDate(), '"><p>', dispDate.getDay(), '</p></td>');
-            dispDate.addDay(1);
-          }
-          tableTxt.push('</tr>');
-        }
-        tableTxt.push('</tbody></table>');
-        $('#thisRange').text([displayRange.today.getYear(), displayRange.today.getMonth()].join('/'));
-        break;
-      case 'week':
-        tableTxt.push('<table class="week"><tbody><tr><th>日</th><th>月</th><th>火</th><th>水</th><th>木</th><th>金</th><th>土</th></tr>');
-        for (_k = 1; _k <= 7; _k++) {
-          tableTxt.push('<td id="', dispDate.getDate(), '"><p>', dispDate.getDay(), '</p></td>');
+    if (displayRange.mode === 'day') {
+      tableTxt.push('<table class="day"><tbody><tr><th>', dispDate.getWeekString(), '</th></tr><tr><td id="', displayRange.today.getDate().replace(/\//g, '-'), '"><p>', dispDate.getDay(), '</p></td></tr></tbody></table>');
+      $('#thisRange').text(displayRange.today.getDate());
+    } else {
+      tableTxt.push('<table class="', displayRange.mode, '"><tbody><tr><th>日</th><th>月</th><th>火</th><th>水</th><th>木</th><th>金</th><th>土</th></tr>');
+      weeks = displayRange.range;
+      for (_i = 1; 1 <= weeks ? _i <= weeks : _i >= weeks; 1 <= weeks ? _i++ : _i--) {
+        tableTxt.push('<tr>');
+        for (_j = 1; _j <= 7; _j++) {
+          tableTxt.push('<td id="', dispDate.getDate().replace(/\//g, '-'), '"><p>', dispDate.getDay(), '</p></td>');
           dispDate.addDay(1);
         }
         tableTxt.push('</tr>');
-        tableTxt.push('</tbody></table>');
-        $('#thisRange').text(displayRange.today.getDate());
-        break;
-      case 'day':
-        tableTxt.push('<table class="day"><tbody><tr><th>', dispDate.getDay(), dispDate.getWeekString(), '</th></tr><tr><td></td></tr></tbody></table>');
-        $('#thisRange').text(displayRange.today.getDate());
-        break;
+      }
+      tableTxt.push('</tbody></table>');
+      $('#thisRange').text(displayRange.today.getDate());
     }
     $('#calendar').append(tableTxt.join(''));
-    return $('tr').children('td[id^="' + displayRange.today.getYear() + '/' + displayRange.today.getMonth() + '"]').children('p').css('color', '#000');
+    $('tr').children('td[id^="' + displayRange.today.getYear() + '-' + displayRange.today.getMonth() + '"]').children('p').css('color', '#000');
+    return $('#' + dispDate.getDate().replace(/\//g, '-')).addClass('selectday');
   };
-  return displayRange.moveToday();
+  displayRange.moveToday();
+  return drowCalendar();
 });
