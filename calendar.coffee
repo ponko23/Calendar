@@ -30,7 +30,10 @@ $ ->
     today: new ponDate() # 基準日
     start: new ponDate() # calendarに描画する週・月の開始日(日曜日）
     mode: 'month' # month、week、dayがある 初期値month
-    range: 6 # 表示する週の数 月と週の時のみ使用する
+    range: # 表示する週の数 月と週の時のみ使用する
+      month: 6
+      week: 1
+      day: 0
 
     # 引数と月週日モードに応じてtodayを移動し、todayからstart、endを求める
     # 引数(val:-1、null、1 )
@@ -43,13 +46,11 @@ $ ->
           @today.addWeek(val) if val
           @start.copy(@today)
           @start.addDay(-@start.getWeekDay())
-          @range = 1
         when 'month'
           @today.addMonth(val) if val
           @start.copy(@today)
           @start.setDay(1)
           @start.addDay(if @start.getWeekDay() is 0 then -7 else -@start.getWeekDay())
-          @range = 6
         else
 
     # 月週日表示モードの切り替え
@@ -101,6 +102,7 @@ $ ->
     tmpArray[2] = Number(tmpArray[2])
     displayRange.today.setDate(tmpArray[0], tmpArray[1], tmpArray[2])
     displayRange.moveRange()
+    $('#thisRange').text displayRange.today.getDate()
 
   ###
     View
@@ -123,20 +125,29 @@ $ ->
       )
       $('#thisRange').text displayRange.today.getDate()
     else
-      tableTxt.push '<table class="', displayRange.mode, '"><tbody><tr><th>日</th><th>月</th><th>火</th><th>水</th><th>木</th><th>金</th><th>土</th></tr>'
-      weeks = displayRange.range
+      tableTxt.push(
+        '<table class="'
+        displayRange.mode
+        '"><tbody><tr><th>日</th><th>月</th><th>火</th><th>水</th><th>木</th><th>金</th><th>土</th></tr>'
+      )
+      weeks = displayRange.range[displayRange.mode]
       for [1..weeks]
         tableTxt.push '<tr>'
         for [1..7]
-          tableTxt.push '<td id="', dispDate.getDate().replace(/\//g, '-'), '"><p>', dispDate.getDay(), '</p></td>'
+          tableTxt.push(
+            '<td id="'
+            dispDate.getDate().replace(/\//g, '-')
+            '"><p>', dispDate.getDay()
+            '</p></td>'
+          )
           dispDate.addDay(1)
         tableTxt.push '</tr>'
       tableTxt.push '</tbody></table>'
       $('#thisRange').text displayRange.today.getDate()
     $('#calendar').append tableTxt.join ''
     # todayが含まれる月の日付のみ黒くする
-    $('tr').children('td[id^="' +displayRange.today.getYear() + '-' + displayRange.today.getMonth() + '"]').children('p').css('color','#000')
-    $('#' + dispDate.getDate().replace(/\//g, '-')).addClass('selectday')
+    $('tr').children('td[id^="' + displayRange.today.getYear() + '-' + displayRange.today.getMonth() + '"]').children('p').css('color','#000')
+    $('#' + displayRange.today.getDate().replace(/\//g, '-')).addClass('selectday')
 
   displayRange.moveToday()
   drowCalendar()

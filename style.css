@@ -24,10 +24,14 @@
 div {
   clear: left;
 }
+#calendar {
+  width: 700px;
+  height: 625px;
+  margin: 15px;
+}
 table {
   border-top: 1px solid #000;
   border-left: 1px solid #000;
-  margin: 20px;
 }
 tr {
   border-bottom: 1px solid #000;
@@ -35,17 +39,24 @@ tr {
 th,
 td {
   border-right: 1px solid #000;
-  width: 3em;
+  width: 100px;
   -webkit-user-select: none;
 }
 th {
   background-color: #ccc;
   text-align: center;
 }
-td {
-  height: 3em;
+.month td {
+  height: 100px;
 }
-.selectday {
+.week td {
+  height: 600px;
+}
+.day td {
+  width: 700px;
+  height: 600px;
+}
+tbody tr .selectday {
   background-color: #aaffaa;
 }
 td:first-child {

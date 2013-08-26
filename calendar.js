@@ -39,7 +39,11 @@ $(function() {
     today: new ponDate(),
     start: new ponDate(),
     mode: 'month',
-    range: 6,
+    range: {
+      month: 6,
+      week: 1,
+      day: 0
+    },
     moveRange: function(val) {
       if (val == null) {
         val = null;
@@ -55,16 +59,14 @@ $(function() {
             this.today.addWeek(val);
           }
           this.start.copy(this.today);
-          this.start.addDay(-this.start.getWeekDay());
-          return this.range = 1;
+          return this.start.addDay(-this.start.getWeekDay());
         case 'month':
           if (val) {
             this.today.addMonth(val);
           }
           this.start.copy(this.today);
           this.start.setDay(1);
-          this.start.addDay(this.start.getWeekDay() === 0 ? -7 : -this.start.getWeekDay());
-          return this.range = 6;
+          return this.start.addDay(this.start.getWeekDay() === 0 ? -7 : -this.start.getWeekDay());
       }
     },
     changeMode: function(mode) {
@@ -115,7 +117,8 @@ $(function() {
     tmpArray[1] = Number(tmpArray[1]);
     tmpArray[2] = Number(tmpArray[2]);
     displayRange.today.setDate(tmpArray[0], tmpArray[1], tmpArray[2]);
-    return displayRange.moveRange();
+    displayRange.moveRange();
+    return $('#thisRange').text(displayRange.today.getDate());
   };
   /*
     View
@@ -132,7 +135,7 @@ $(function() {
       $('#thisRange').text(displayRange.today.getDate());
     } else {
       tableTxt.push('<table class="', displayRange.mode, '"><tbody><tr><th>日</th><th>月</th><th>火</th><th>水</th><th>木</th><th>金</th><th>土</th></tr>');
-      weeks = displayRange.range;
+      weeks = displayRange.range[displayRange.mode];
       for (_i = 1; 1 <= weeks ? _i <= weeks : _i >= weeks; 1 <= weeks ? _i++ : _i--) {
         tableTxt.push('<tr>');
         for (_j = 1; _j <= 7; _j++) {
@@ -146,7 +149,7 @@ $(function() {
     }
     $('#calendar').append(tableTxt.join(''));
     $('tr').children('td[id^="' + displayRange.today.getYear() + '-' + displayRange.today.getMonth() + '"]').children('p').css('color', '#000');
-    return $('#' + dispDate.getDate().replace(/\//g, '-')).addClass('selectday');
+    return $('#' + displayRange.today.getDate().replace(/\//g, '-')).addClass('selectday');
   };
   displayRange.moveToday();
   return drowCalendar();
