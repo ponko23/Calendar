@@ -1,6 +1,6 @@
 #toolbar {
   background-color: #2453e1;
-  height: 1.5em;
+  height: 1.2em;
 }
 #toolbar li {
   color: #e4e5e8;
@@ -11,6 +11,7 @@
   width: 6em;
   cursor: pointer;
   -webkit-user-select: none;
+  height: 1.2em;
 }
 #toolbar li:hover {
   background-color: #848da5;

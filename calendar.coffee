@@ -30,6 +30,7 @@ $ ->
     today: new ponDate() # 基準日
     start: new ponDate() # calendarに描画する週・月の開始日(日曜日）
     mode: 'month' # month、week、dayがある 初期値month
+
     range: # 表示する週の数 月と週の時のみ使用する
       month: 6
       week: 1
