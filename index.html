@@ -6,7 +6,7 @@
   <link rel="stylesheet" href="style.css"/>
   <script src="jquery.js"></script>
   <script src="ponko23.js"></script>
-  <script src="calendar.js"></script>
+  <script src="ponCalendar.js"></script>
   <title></title>
 </head>
 <body>
@@ -16,22 +16,22 @@
   <main>
     <div id="toolbar">
       <ul>
-        <li id="today">今日</li>
-        <li id="before">◀</li>
+        <li id="goToday">今日</li>
+        <li id="goBack">◀</li>
         <li id="thisRange">日付</li>
-        <li id="next">▶</li>
-        <li id="monthMode" class="modeChange">月</li>
-        <li id="weekMode" class="modeChange">週</li>
-        <li id="dayMode" class="modeChange">日</li>
+        <li id="goNext">▶</li>
+        <li id="changeModeMonth" class="modeChange">月</li>
+        <li id="changeModeWeek" class="modeChange">週</li>
+        <li id="changeModeDay" class="modeChange">日</li>
         <li>
           <select id="changeStartDay">
-            <option value="0">日</option>
-            <option value="1">月</option>
-            <option value="2">火</option>
-            <option value="3">水</option>
-            <option value="4">木</option>
-            <option value="5">金</option>
-            <option value="6">土</option>
+            <option value=0 selected>日</option>
+            <option value=1>月</option>
+            <option value=2>火</option>
+            <option value=3>水</option>
+            <option value=4>木</option>
+            <option value=5>金</option>
+            <option value=6>土</option>
           </select>
         </li>
       </ul>

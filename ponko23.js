@@ -82,6 +82,25 @@ ponDate = function() {
       }
     },
     setDate: function(val1, val2, val3) {
+      var separator;
+      if (typeof val1 === 'string') {
+        if (val1.indexOf('-') > -1) {
+          separator = '-';
+        } else if (val1.indexOf('/') > -1) {
+          separator = '/';
+        } else {
+          return;
+        }
+        val1 = val1.split(separator);
+      }
+      if (val1 instanceof Array) {
+        val1 = val1.map(function(a) {
+          return Number(a);
+        });
+        val3 = val1[2];
+        val2 = val1[1];
+        val1 = val1[0];
+      }
       this.ponDate.setFullYear(val1);
       this.ponDate.setMonth(val2 - 1);
       this.ponDate.setDate(val3);

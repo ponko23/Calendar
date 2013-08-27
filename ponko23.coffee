@@ -131,8 +131,24 @@ ponDate = ->
 
 
   # 日付を設定する
-  # 引数(val1:年, val2:月,val3:日)
+  # 引数(val1:年or配列or文字列, val2:月,val3:日)
+  # 文字列の場合、'yyyy-MM-dd'でも'yyyy/M/d'でも可、'yyyy-MM/dd'は不可
+  # 配列の場合、文字列配列でも数値配列でも可
   setDate: (val1, val2, val3)->
+    if typeof val1 is 'string'
+      if val1.indexOf('-') > -1
+        separator = '-'
+      else if val1.indexOf('/') > -1
+        separator = '/'
+      else
+        return
+      val1 = val1.split(separator)
+
+    if val1 instanceof Array
+      val1 = val1.map((a)->Number(a))
+      val3 = val1[2]
+      val2 = val1[1]
+      val1 = val1[0]
     @ponDate.setFullYear(val1)
     @ponDate.setMonth(val2 - 1)
     @ponDate.setDate(val3)
