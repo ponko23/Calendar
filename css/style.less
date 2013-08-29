@@ -1,94 +1,111 @@
-#toolbar {
+.lineT(@color){border-top:1px solid @color;}
+.lineR(@color){border-right:1px solid @color;}
+.lineB(@color){border-bottom:1px solid @color;}
+.lineL(@color){border-left:1px solid @color;}
+
+
+
+html, body, header, main, table, tbody, tr, ul {
+  width: 100%;
+}
+html{
+  max-width: 700px;
+}
+html, body, table, tbody {
+  height: 100%;
+}
+
+header {
   background-color: #2453e1;
-  height: 2em;
-  display: flex;
-  li {
-    flex-box: row wrap;
-    flex: 1 1 6em;
-    color: #e4e5e8;
-    display: block;
+  color: #fff;
+  min-height: 48px;
+  height: 15%;
+  max-height: 48px;
+
+  vertical-align: middle;
+  h1, div {
     float: left;
+    height: 50%;
+  }
+  h1 {
+    padding: 0 10px;
+  }
+}
+#toolbar {
+  display: flex;
+  flex-flow: row nowrap;
+  clear: left;
+  height: 50%;
+  li {
+    flex: 1 1 24px;
+    color: #e4e5e8;
     text-decoration: none;
     text-align: center;
-    line-height: 2em;
-    width: 12.5%;
+    vertical-align: middle;
     cursor: pointer;
     -webkit-user-select: none;
-    height: 2em;
+    background-color: #2453e1;
+    height: 24px;
+    line-height: 24px;
+    select {
+      height: 24px;
+    }
   }
   li:hover {
     background-color: #848da5;
   }
-  li:nth-child(3) {
-    flex: 3 3 12em;
-  }
 }
-
 .modeChange {
-  background-color: #4e4f54;
-}
+   background-color: #4e4f54;
+ }
 .modeChange:hover {
   background-color: #6a7cb1;
 }
 
-div {
+main {
+  height: 624px;
+  max-height: 85%;
   clear: left;
 }
 
-#calendar {
-  padding :15px
-  width: 700px;
-  height: 625px;
-}
-
 table {
-  border-top: 1px solid #000;
-  border-left: 1px solid #000;
+  .lineT(black);
+  .lineL(black);
+}
+tbody {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: flex-start;
 }
 
 tr {
-  border-bottom: 1px solid #000;
+  flex: 1 1 24px;
+  display: flex;
+  flex-flow: row nowrap;
+  .lineB(black);
+}
+tr:first-child {
+  flex: 0 0 24px;
 }
 th, td {
-  border-right: 1px solid #000;
-  width: 100px;
+  flex: 1 1 24px;
+  .lineR(black);
   -webkit-user-select: none;
 }
 th {
   background-color: #ccc;
   text-align: center;
 }
-#month td{
-  height: 100px;
-}
 
-#week td {
-  height: 600px;
-}
-
-#day td {
-  width: 700px;
-  height: 600px;
-}
-tbody tr .selectDay {
-  background-color: #aaffaa;
-}
 .sunday{
   background-color: #ffaaaa;
 }
 .saturday{
   background-color: #aaaaff;
 }
-
-.day {
-  th {
-    background-color: #ccc;
-  }
-  td {
-    background-color: #fff;
-  }
-}
-
+.selectDay {
+   background-color: #aaffaa;
+ }
 .otherMonth {
   color: #999;
 }

@@ -103,7 +103,7 @@ $ ->
     else if calendar.mode is 'week'
       addDay = ((7-calendar.start)%7+drowDate.getWeekDay())%7
       drowDate.addDay(-addDay)
-    tableTxt.push '<table id="', calendar.mode, '"><tbody><tr>'
+    tableTxt.push '<tbody id="', calendar.mode, '"><tr>'
     if calendar.mode is 'day'
       tableTxt.push '<th>',drowDate.getWeekString(), '</th></tr>'
     else
@@ -126,7 +126,7 @@ $ ->
         )
         drowDate.addDay(1)
       tableTxt.push '</tr>'
-    tableTxt.push '</tbody></table>'
+    tableTxt.push '</tbody>'
     $('#calendar').append(tableTxt.join '')
     $('tr').children("td:not('[id^='#{calendar.day.getYear() + '-' + calendar.day.getMonth()}']')").addClass('otherMonth')
     $('#thisRange').text calendar.day.getDate()

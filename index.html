@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <link rel="stylesheet" href="css/reset.css"/>
   <link rel="stylesheet" href="css/style.css"/>
-  <meta name="viewport" content="target-densitydpi=device-dpi, width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="viewport" content="target-densitydpi=device-dpi, width=device-width, height=device-height, initial-scale=1.0, user-scalable=yes">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
   <script src="js/ponko23.js"></script>
   <script src="js/ponCalendar.js"></script>
@@ -12,10 +12,11 @@
 </head>
 <body>
   <header>
+    <h1>Calendar</h1>
+    <div id="thisRange">日付</div>
     <ul id="toolbar">
       <li id="goToday">今日</li>
       <li id="goBack">◀</li>
-      <li id="thisRange">日付</li>
       <li id="goNext">▶</li>
       <li id="changeModeMonth" class="modeChange">月</li>
       <li id="changeModeWeek" class="modeChange">週</li>
@@ -31,13 +32,10 @@
           <option value=6>土</option>
         </select>
       </li>
-    </ul>
-  </header>
+    </ul>  </header>
   <main role="main">
-
-    <div id="calendar">
-
-    </div>
+    <table id="calendar">
+    </table>
   </main>
   <footer>
 
