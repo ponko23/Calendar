@@ -1,48 +1,51 @@
 #toolbar {
   background-color: #2453e1;
   height: 2em;
-  li {
-    color: #e4e5e8;
-    display: block;
-    float: left;
-    text-decoration: none;
-    text-align: center;
-    width: 6em;
-    cursor: pointer;
-    -webkit-user-select: none;
-    height: 2em;
-  }
-  li:hover {
-    background-color: #848da5;
-  }
+  display: flex;
 }
-
+#toolbar li {
+  flex-box: row wrap;
+  flex: 1 1 6em;
+  color: #e4e5e8;
+  display: block;
+  float: left;
+  text-decoration: none;
+  text-align: center;
+  line-height: 2em;
+  width: 12.5%;
+  cursor: pointer;
+  -webkit-user-select: none;
+  height: 2em;
+}
+#toolbar li:hover {
+  background-color: #848da5;
+}
+#toolbar li:nth-child(3) {
+  flex: 3 3 12em;
+}
 .modeChange {
   background-color: #4e4f54;
 }
 .modeChange:hover {
   background-color: #6a7cb1;
 }
-
 div {
   clear: left;
 }
-
 #calendar {
+  padding: 15px
   width: 700px;
   height: 625px;
-  margin: 15px;
 }
-
 table {
   border-top: 1px solid #000;
   border-left: 1px solid #000;
 }
-
 tr {
   border-bottom: 1px solid #000;
 }
-th, td {
+th,
+td {
   border-right: 1px solid #000;
   width: 100px;
   -webkit-user-select: none;
@@ -51,14 +54,12 @@ th {
   background-color: #ccc;
   text-align: center;
 }
-#month td{
+#month td {
   height: 100px;
 }
-
 #week td {
   height: 600px;
 }
-
 #day td {
   width: 700px;
   height: 600px;
@@ -66,23 +67,18 @@ th {
 tbody tr .selectDay {
   background-color: #aaffaa;
 }
-.sunday{
+.sunday {
   background-color: #ffaaaa;
 }
-.saturday{
+.saturday {
   background-color: #aaaaff;
 }
-#month td , #week td {
+.day th {
+  background-color: #ccc;
+}
+.day td {
+  background-color: #fff;
+}
+.otherMonth {
   color: #999;
 }
-
-.day {
-  th {
-    background-color: #ccc;
-  }
-  td {
-    background-color: #fff;
-  }
-}
-
-

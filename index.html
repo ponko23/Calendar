@@ -1,41 +1,39 @@
 <!doctype html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <link rel="stylesheet" href="reset.css"/>
-  <link rel="stylesheet" href="style.css"/>
-  <script src="jquery.js"></script>
-  <script src="ponko23.js"></script>
-  <script src="ponCalendar.js"></script>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="css/reset.css"/>
+  <link rel="stylesheet" href="css/style.css"/>
+  <meta name="viewport" content="target-densitydpi=device-dpi, width=device-width, initial-scale=1.0, user-scalable=yes">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+  <script src="js/ponko23.js"></script>
+  <script src="js/ponCalendar.js"></script>
   <title></title>
 </head>
 <body>
   <header>
-
+    <ul id="toolbar">
+      <li id="goToday">今日</li>
+      <li id="goBack">◀</li>
+      <li id="thisRange">日付</li>
+      <li id="goNext">▶</li>
+      <li id="changeModeMonth" class="modeChange">月</li>
+      <li id="changeModeWeek" class="modeChange">週</li>
+      <li id="changeModeDay" class="modeChange">日</li>
+      <li>
+        <select id="changeStartDay">
+          <option value=0 selected>日</option>
+          <option value=1>月</option>
+          <option value=2>火</option>
+          <option value=3>水</option>
+          <option value=4>木</option>
+          <option value=5>金</option>
+          <option value=6>土</option>
+        </select>
+      </li>
+    </ul>
   </header>
-  <main>
-    <div id="toolbar">
-      <ul>
-        <li id="goToday">今日</li>
-        <li id="goBack">◀</li>
-        <li id="thisRange">日付</li>
-        <li id="goNext">▶</li>
-        <li id="changeModeMonth" class="modeChange">月</li>
-        <li id="changeModeWeek" class="modeChange">週</li>
-        <li id="changeModeDay" class="modeChange">日</li>
-        <li>
-          <select id="changeStartDay">
-            <option value=0 selected>日</option>
-            <option value=1>月</option>
-            <option value=2>火</option>
-            <option value=3>水</option>
-            <option value=4>木</option>
-            <option value=5>金</option>
-            <option value=6>土</option>
-          </select>
-        </li>
-      </ul>
-    </div>
+  <main role="main">
 
     <div id="calendar">
 

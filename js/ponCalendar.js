@@ -148,9 +148,9 @@ $(function() {
     }
     tableTxt.push('</tbody></table>');
     $('#calendar').append(tableTxt.join(''));
-    $('tr').children('td[id^="' + calendar.day.getYear() + '-' + calendar.day.getMonth() + '"]').css('color', '#000');
+    $('tr').children("td:not('[id^='" + (calendar.day.getYear() + '-' + calendar.day.getMonth()) + "']')").addClass('otherMonth');
     $('#thisRange').text(calendar.day.getDate());
-    return $('td[id^="' + calendar.day.getDate().replace(/\//g, '-') + '"]').addClass('selectDay');
+    return $('td[id="' + calendar.day.getDate().replace(/\//g, '-') + '"]').addClass('selectDay');
   };
   return drowCalendar();
 });
